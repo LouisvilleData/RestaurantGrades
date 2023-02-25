@@ -1,9 +1,12 @@
 import debounce from "lodash.debounce";
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function Home() {
     const [restaurantResults, setRestaurantResults] = useState([]);
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
         // navigator.geolocation.getCurrentPosition(function(position) {
         //   // console.log("Latitude is :", position.coords.latitude);
@@ -17,9 +20,11 @@ export default function Home() {
         const query = event.target.value;
 
         if (query !== "" && query.length > 2) {
+            setLoading(true);
             fetch(`https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Restaurant_Inspection_Scores/FeatureServer/0/query?f=json&where=(EstablishmentName LIKE '%25${encodeURI(query)}%25' OR Address LIKE '%25${encodeURI(query)}%25')&outFields=*`)
                 .then(data => (data.json()))
                 .then(json => {
+                    setLoading(false);
                     if (json.features) {
                         const data = json.features.reduce((result, restaurant) => {
                             let i = result.findIndex(f => { return f.id === restaurant.attributes.EstablishmentID });
@@ -59,17 +64,19 @@ export default function Home() {
 
 
                         }, []);
-
                         setRestaurantResults(data);
                     }
                 })
         } else {
             setRestaurantResults([]);
+            setLoading(false);
         }
 
     }, 600)
 
-    return <div className="p-4 md:p-8 min-h-screen w-full md:w-3/4 mx-auto">
+    return <div className="bg-gray-200 min-h-screen">
+        <div className="bg-white">
+        <div className="p-4 md:p-8 w-full md:w-3/4 mx-auto">
         <h1 className="text-4xl">Louisville Restaurant Grades</h1>
         <div className="bg-white rounded-md mt-4">
             <Form.Group className="mb-3" controlId="formRestaurant">
@@ -80,7 +87,12 @@ export default function Home() {
                 </Form.Text>
             </Form.Group>
         </div>
+        </div>
+        </div>
 
+    <div className="p-4 md:p-8 w-full md:w-3/4 mx-auto relative">
+        {loading && <div className="px-40 pb-40 pt-20 w-32 mx-auto"><Spinner animation="border" size="lg" className="w-32 h-32" /></div>}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
             {restaurantResults && restaurantResults.map(restaurant => (
                 <div key={restaurant.id} className="flex flex-column relative bg-white font-semibold rounded-md border shadow-lg w-full">
@@ -125,5 +137,6 @@ export default function Home() {
             ))}
 
         </div>
+    </div>
     </div>
 }
