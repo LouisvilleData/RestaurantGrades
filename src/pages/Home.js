@@ -4,7 +4,6 @@ import Form from "react-bootstrap/Form";
 
 export default function Home() {
     const [restaurantResults, setRestaurantResults] = useState([]);
-    console.log(process.env.REACT_APP_TESTya)
     useEffect(() => {
         // navigator.geolocation.getCurrentPosition(function(position) {
         //   // console.log("Latitude is :", position.coords.latitude);
@@ -21,7 +20,6 @@ export default function Home() {
             fetch(`https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Restaurant_Inspection_Scores/FeatureServer/0/query?f=json&where=(EstablishmentName LIKE '%25${encodeURI(query)}%25' OR Address LIKE '%25${encodeURI(query)}%25')&outFields=*`)
                 .then(data => (data.json()))
                 .then(json => {
-                    console.log(json.features)
                     if (json.features) {
                         const data = json.features.reduce((result, restaurant) => {
                             let i = result.findIndex(f => { return f.id === restaurant.attributes.EstablishmentID });
@@ -85,13 +83,13 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
             {restaurantResults && restaurantResults.map(restaurant => (
-                <div key={restaurant.id} className="bg-white font-semibold rounded-md border shadow-lg w-full">
+                <div key={restaurant.id} className="flex flex-column relative bg-white font-semibold rounded-md border shadow-lg w-full">
                    {!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?
                     <img className="w-full rounded-t-md mx-auto" src={`https://picsum.photos/300/150?random=${restaurant.id}`} alt="" />:
                     <img className="w-full rounded-t-md mx-auto" src={`https://maps.googleapis.com/maps/api/streetview?key=${process.env.REACT_APP_GCP_API}&location=${restaurant.name} ${restaurant.address} ${restaurant.city}&size=300x200`} alt="" />}
                     <div className="p-4">
                         <h1 className="text-lg text-gray-700 text-center">{restaurant.name}</h1>
-                        <h3 className="text-sm text-gray-400 text-center">{restaurant.address}</h3>
+                        <h3 className="text-sm text-gray-500 text-center">{restaurant.address}</h3>
                         <h4 className="block w-full text-center mt-2">Inspections:</h4>
                         <table className="m-0 p-0 w-full text-xs xl:text-base text-center xl:text-left">
                             <thead>
@@ -107,8 +105,8 @@ export default function Home() {
                                     if(a.date > b.date) return -1;
                                     if(a.date < b.date) return 1;
                                     return 0;
-                                }).map(inspection => (
-                                    <tr key={inspection.date} className="">
+                                }).map((inspection, index) => (
+                                    <tr key={index} className="">
                                         <td>{`${inspection.date.getMonth()}/${inspection.date.getDate()}/${inspection.date.getFullYear()}`}</td>
                                         <td>{inspection.type}</td>
                                         <td>{inspection.score !== 0 ? inspection.score : "N/A"}</td>
@@ -117,6 +115,11 @@ export default function Home() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                    <div className="bg-gray-200 px-4 py-1 w-full mt-auto">
+                        <span className="text-gray-600">
+                            <i class="fa-solid fa-circle-info"></i> Permit Number: <span className="text-black">{restaurant.id}</span>
+                        </span>
                     </div>
                 </div>
             ))}
