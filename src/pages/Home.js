@@ -86,7 +86,9 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
             {restaurantResults && restaurantResults.map(restaurant => (
                 <div key={restaurant.id} className="bg-white font-semibold rounded-md border shadow-lg w-full">
-                    <img className="w-full rounded-t-md mx-auto" src={`https://maps.googleapis.com/maps/api/streetview?key=AIzaSyBzrk09mIwwMT-rgBZFKY1f4KDJadsKhZQ&location=${restaurant.name} ${restaurant.address} ${restaurant.city}&size=300x200`} alt="" />
+                   {!process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?
+                    <img className="w-full rounded-t-md mx-auto" src={`https://picsum.photos/300/150?random=${restaurant.id}`} alt="" />:
+                    <img className="w-full rounded-t-md mx-auto" src={`https://maps.googleapis.com/maps/api/streetview?key=AIzaSyBzrk09mIwwMT-rgBZFKY1f4KDJadsKhZQ&location=${restaurant.name} ${restaurant.address} ${restaurant.city}&size=300x200`} alt="" />}
                     <div className="p-4">
                         <h1 className="text-lg text-gray-700 text-center">{restaurant.name}</h1>
                         <h3 className="text-sm text-gray-400 text-center">{restaurant.address}</h3>
