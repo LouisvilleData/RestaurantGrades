@@ -71,7 +71,7 @@ export default function Home() {
 
     }, 600)
 
-    return <div className="p-4 md:p-8 h-screen w-full md:w-3/4 mx-auto">
+    return <div className="p-4 md:p-8 min-h-screen w-full md:w-3/4 mx-auto">
 
         <div className="bg-white rounded-md p-4">
             <Form.Group className="mb-3" controlId="formRestaurant">
@@ -85,31 +85,37 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
             {restaurantResults && restaurantResults.map(restaurant => (
-                <div key={restaurant.id} className="bg-white font-semibold rounded-md border shadow-lg p-4 w-full">
-                    {/* <img className="mb-3 w-32 h-32 rounded-full shadow-lg mx-auto" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="product designer" /> */}
-                    <h1 className="text-lg text-gray-700 text-center">{restaurant.name}</h1>
-                    <h3 className="text-sm text-gray-400 text-center">{restaurant.address}</h3>
-                    <h4 className="block w-full text-center mt-2">Inspections:</h4>
-                    <table className="m-0 p-0 w-full text-xs xl:text-base text-center xl:text-left">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Score</th>
-                                <th>Grade</th>
-                            </tr>
-                        </thead>
-                        <tbody className="">
-                            {restaurant.inspections && restaurant.inspections.map(inspection => (
-                                <tr key={inspection.date} className="">
-                                    <td>{`${inspection.date.getMonth()}/${inspection.date.getDate()}/${inspection.date.getFullYear()}`}</td>
-                                    <td>{inspection.type}</td>
-                                    <td>{inspection.score}</td>
-                                    <td>{inspection.grade ? inspection.grade : "N/A"}</td>
+                <div key={restaurant.id} className="bg-white font-semibold rounded-md border shadow-lg w-full">
+                    <img className="w-full rounded-t-md mx-auto" src={`https://picsum.photos/300/150?random=${restaurant.id}`} alt="" />
+                    <div className="p-4">
+                        <h1 className="text-lg text-gray-700 text-center">{restaurant.name}</h1>
+                        <h3 className="text-sm text-gray-400 text-center">{restaurant.address}</h3>
+                        <h4 className="block w-full text-center mt-2">Inspections:</h4>
+                        <table className="m-0 p-0 w-full text-xs xl:text-base text-center xl:text-left">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Score</th>
+                                    <th>Grade</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className="">
+                                {restaurant.inspections && restaurant.inspections.sort((a,b) => {
+                                    if(a.date > b.date) return -1;
+                                    if(a.date < b.date) return 1;
+                                    return 0;
+                                }).map(inspection => (
+                                    <tr key={inspection.date} className="">
+                                        <td>{`${inspection.date.getMonth()}/${inspection.date.getDate()}/${inspection.date.getFullYear()}`}</td>
+                                        <td>{inspection.type}</td>
+                                        <td>{inspection.score}</td>
+                                        <td>{inspection.grade ? inspection.grade : "N/A"}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             ))}
 
