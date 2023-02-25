@@ -107,7 +107,7 @@ export default function Home() {
                                     return 0;
                                 }).map((inspection, index) => (
                                     <tr key={index} className="">
-                                        <td>{`${inspection.date.getMonth()}/${inspection.date.getDate()}/${inspection.date.getFullYear()}`}</td>
+                                        <td>{`${inspection.date.getMonth() + 1}/${inspection.date.getDate()}/${inspection.date.getFullYear()}`}</td>
                                         <td>{inspection.type}</td>
                                         <td>{inspection.score !== 0 ? inspection.score : "N/A"}</td>
                                         <td>{inspection.grade ? inspection.grade : "N/A"}</td>
