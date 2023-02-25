@@ -24,11 +24,11 @@ export default function Home() {
                     console.log(json.features)
                     if (json.features) {
                         const data = json.features.reduce((result, restaurant) => {
-                            let i = result.findIndex(f => { return f.id == restaurant.attributes.EstablishmentID });
+                            let i = result.findIndex(f => { return f.id === restaurant.attributes.EstablishmentID });
 
                             if (i > -1) {
                                 const res = result.map((r, index) => {
-                                    if (i == index) {
+                                    if (i === index) {
                                         r.inspections.push({
                                             id: restaurant.attributes.InspectionID,
                                             score: restaurant.attributes.score,
@@ -73,7 +73,7 @@ export default function Home() {
 
     return <div className="p-4 md:p-8 min-h-screen w-full md:w-3/4 mx-auto">
 
-        <div className="bg-white rounded-md p-4">
+        <div className="bg-white rounded-md md:p-4">
             <Form.Group className="mb-3" controlId="formRestaurant">
                 <Form.Label>Search for a restaurant</Form.Label>
                 <Form.Control type="search" placeholder="Enter restaurant name or address" onChange={handleRestaurantChange} />
@@ -86,7 +86,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
             {restaurantResults && restaurantResults.map(restaurant => (
                 <div key={restaurant.id} className="bg-white font-semibold rounded-md border shadow-lg w-full">
-                    <img className="w-full rounded-t-md mx-auto" src={`https://picsum.photos/300/150?random=${restaurant.id}`} alt="" />
+                    <img className="w-full rounded-t-md mx-auto" src={`https://maps.googleapis.com/maps/api/streetview?key=AIzaSyBzrk09mIwwMT-rgBZFKY1f4KDJadsKhZQ&location=${restaurant.name} ${restaurant.address} ${restaurant.city}&size=300x200`} alt="" />
                     <div className="p-4">
                         <h1 className="text-lg text-gray-700 text-center">{restaurant.name}</h1>
                         <h3 className="text-sm text-gray-400 text-center">{restaurant.address}</h3>
@@ -109,7 +109,7 @@ export default function Home() {
                                     <tr key={inspection.date} className="">
                                         <td>{`${inspection.date.getMonth()}/${inspection.date.getDate()}/${inspection.date.getFullYear()}`}</td>
                                         <td>{inspection.type}</td>
-                                        <td>{inspection.score}</td>
+                                        <td>{inspection.score !== 0 ? inspection.score : "N/A"}</td>
                                         <td>{inspection.grade ? inspection.grade : "N/A"}</td>
                                     </tr>
                                 ))}
