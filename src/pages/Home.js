@@ -70,8 +70,8 @@ export default function Home() {
     }, 600)
 
     return <div className="p-4 md:p-8 min-h-screen w-full md:w-3/4 mx-auto">
-
-        <div className="bg-white rounded-md md:p-4">
+        <h1 className="text-4xl">Louisville Restaurant Grades</h1>
+        <div className="bg-white rounded-md mt-4">
             <Form.Group className="mb-3" controlId="formRestaurant">
                 <Form.Label>Search for a restaurant</Form.Label>
                 <Form.Control type="search" placeholder="Enter restaurant name or address" onChange={handleRestaurantChange} />
