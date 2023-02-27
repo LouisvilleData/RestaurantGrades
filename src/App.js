@@ -14,7 +14,10 @@ function App() {
       path: "/restaurant/:restaurantID",
       element: <Restaurant />
     }
-  ])
+  ],{
+    basename: "/RestaurantGrades"
+  });
+
   return (
     <div className='bg-gray-200'>
       <RouterProvider router={router} />
