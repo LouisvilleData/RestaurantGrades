@@ -2,22 +2,38 @@ import debounce from "lodash.debounce";
 import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Spinner from 'react-bootstrap/Spinner';
+import Button from "react-bootstrap/Button";
+import { useSearchParams } from "react-router-dom";
 
 export default function Home() {
     const [restaurantResults, setRestaurantResults] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchParams] = useSearchParams();
+    const [searchQuery, setSearchQuery] = useState("");
 
+    console.log(searchParams)
     useEffect(() => {
+        if(searchParams.get("prev_search")) {
+            setSearchQuery(searchParams.get("prev_search"));
+            setLoading(true);
+            fetch(`https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Restaurant_Inspection_Scores/FeatureServer/0/query?f=json&where=(EstablishmentName LIKE '%25${encodeURI(searchParams.get("prev_search"))}%25' OR Address LIKE '%25${encodeURI(searchParams.get("prev_search"))}%25')&outFields=*`)
+            .then(data => (data.json()))
+            .then(json => {
+                setLoading(false);
+                groupRestaurants(json);
+            })
+        }
         // navigator.geolocation.getCurrentPosition(function(position) {
         //   // console.log("Latitude is :", position.coords.latitude);
         //   // console.log("Longitude is :", position.coords.longitude);
         // });
 
 
-    }, [])
+    }, [searchParams])
 
     const handleRestaurantChange = debounce((event) => {
         const query = event.target.value;
+        setSearchQuery(query);
 
         if (query !== "" && query.length > 2) {
             setLoading(true);
@@ -25,47 +41,7 @@ export default function Home() {
                 .then(data => (data.json()))
                 .then(json => {
                     setLoading(false);
-                    if (json.features) {
-                        const data = json.features.reduce((result, restaurant) => {
-                            let i = result.findIndex(f => { return f.id === restaurant.attributes.EstablishmentID });
-
-                            if (i > -1) {
-                                const res = result.map((r, index) => {
-                                    if (i === index) {
-                                        r.inspections.push({
-                                            id: restaurant.attributes.InspectionID,
-                                            score: restaurant.attributes.score,
-                                            grade: restaurant.attributes.Grade,
-                                            date: new Date(restaurant.attributes.InspectionDate),
-                                            type: restaurant.attributes.Ins_TypeDesc
-                                        })
-                                    }
-
-                                    return r;
-                                })
-                                return res
-                            } else {
-                                return [...result, {
-                                    id: restaurant.attributes.EstablishmentID,
-                                    name: restaurant.attributes.EstablishmentName,
-                                    address: restaurant.attributes.Address,
-                                    city: restaurant.attributes.City,
-                                    inspections: [{
-                                        id: restaurant.attributes.InspectionID,
-                                        score: restaurant.attributes.score,
-                                        grade: restaurant.attributes.Grade,
-                                        date: new Date(restaurant.attributes.InspectionDate),
-                                        type: restaurant.attributes.Ins_TypeDesc
-                                    }
-                                    ]
-                                }]
-
-                            }
-
-
-                        }, []);
-                        setRestaurantResults(data);
-                    }
+                    groupRestaurants(json);
                 })
         } else {
             setRestaurantResults([]);
@@ -73,6 +49,50 @@ export default function Home() {
         }
 
     }, 600)
+
+    function groupRestaurants(json) {
+        if (json.features) {
+            const data = json.features.reduce((result, restaurant) => {
+                let i = result.findIndex(f => { return f.id === restaurant.attributes.EstablishmentID; });
+
+                if (i > -1) {
+                    const res = result.map((r, index) => {
+                        if (i === index) {
+                            r.inspections.push({
+                                id: restaurant.attributes.InspectionID,
+                                score: restaurant.attributes.score,
+                                grade: restaurant.attributes.Grade,
+                                date: new Date(restaurant.attributes.InspectionDate),
+                                type: restaurant.attributes.Ins_TypeDesc
+                            });
+                        }
+
+                        return r;
+                    });
+                    return res;
+                } else {
+                    return [...result, {
+                        id: restaurant.attributes.EstablishmentID,
+                        name: restaurant.attributes.EstablishmentName,
+                        address: restaurant.attributes.Address,
+                        city: restaurant.attributes.City,
+                        inspections: [{
+                            id: restaurant.attributes.InspectionID,
+                            score: restaurant.attributes.score,
+                            grade: restaurant.attributes.Grade,
+                            date: new Date(restaurant.attributes.InspectionDate),
+                            type: restaurant.attributes.Ins_TypeDesc
+                        }
+                        ]
+                    }];
+
+                }
+
+
+            }, []);
+            setRestaurantResults(data);
+        }
+    }
 
     return <div className="bg-gray-200 min-h-screen">
         <div className="bg-white">
@@ -127,10 +147,12 @@ export default function Home() {
                                 ))}
                             </tbody>
                         </table>
+
+                        <Button className="w-full mt-4" href={`/restaurant/${restaurant.id}?prev_search=${searchQuery}`} variant="primary">Check Violations</Button>
                     </div>
                     <div className="bg-gray-200 px-4 py-1 w-full mt-auto">
                         <span className="text-gray-600">
-                            <i class="fa-solid fa-circle-info"></i> Permit Number: <span className="text-black">{restaurant.id}</span>
+                            <i className="fa-solid fa-circle-info"></i> Permit Number: <span className="text-black">{restaurant.id}</span>
                         </span>
                     </div>
                 </div>
