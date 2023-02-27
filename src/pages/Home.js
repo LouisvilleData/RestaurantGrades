@@ -149,7 +149,7 @@ export default function Home() {
                             </tbody>
                         </table>
 
-                        <Button className="w-full mt-4" href="" onClick={() => {navigate(`restaurant/${restaurant.id}?prev_search=${searchQuery}`)}} variant="primary">Check Violations</Button>
+                        <Button className="w-full mt-4" href="" onClick={() => {navigate(`/restaurant/${restaurant.id}?prev_search=${searchQuery}`)}} variant="primary">Check Violations</Button>
                     </div>
                     <div className="bg-gray-200 px-4 py-1 w-full mt-auto">
                         <span className="text-gray-600">
