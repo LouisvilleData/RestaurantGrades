@@ -1,5 +1,6 @@
 {
   "name": "louisville-restaurant-inspections",
+  "homepage": "https://louisvilledata.github.io/RestaurantGrades/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
