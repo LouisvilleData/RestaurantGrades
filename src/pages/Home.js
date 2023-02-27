@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Spinner from 'react-bootstrap/Spinner';
 import Button from "react-bootstrap/Button";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function Home() {
     const [restaurantResults, setRestaurantResults] = useState([]);
@@ -11,6 +11,7 @@ export default function Home() {
     const [searchParams] = useSearchParams();
     const [searchQuery, setSearchQuery] = useState("");
 
+    const navigate = useNavigate();
     console.log(searchParams)
     useEffect(() => {
         if(searchParams.get("prev_search")) {
@@ -148,7 +149,7 @@ export default function Home() {
                             </tbody>
                         </table>
 
-                        <Button className="w-full mt-4" href={`/restaurant/${restaurant.id}?prev_search=${searchQuery}`} variant="primary">Check Violations</Button>
+                        <Button className="w-full mt-4" href="" onClick={() => {navigate(`restaurant/${restaurant.id}?prev_search=${searchQuery}`)}} variant="primary">Check Violations</Button>
                     </div>
                     <div className="bg-gray-200 px-4 py-1 w-full mt-auto">
                         <span className="text-gray-600">
