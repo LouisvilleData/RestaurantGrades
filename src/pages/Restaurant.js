@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Table from 'react-bootstrap/Table';
-// import Button from "react-bootstrap/Button";
+import Button from "react-bootstrap/Button";
 
 export default function Restaurant() {
     const { restaurantID } = useParams();
     const [violations, setViolations] = useState([]);
-    // const [searchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?outFields=*&where=(EstablishmentID = ${restaurantID})&f=json`)
@@ -31,7 +31,7 @@ export default function Restaurant() {
     return (<div className="pb-4 px-4 md:pb-8 md:px-8 w-full md:w-3/4 mx-auto relative min-h-screen">
 
         <div className="bg-white p-4">
-            {/* {searchParams.get("prev_search") && <Button href="" onClick={() => {navigate(`/?prev_search=${searchParams.get("prev_search")}`)}}>Back to results</Button>} */}
+            {searchParams.get("prev_search") && <Button href="" onClick={() => {navigate(`/?prev_search=${searchParams.get("prev_search")}`)}}>Back to results</Button>}
             <h1 className="text-4xl pt-4">{violations && violations.length > 0 && violations[0].attributes.premise_name} Inspection Violation Results</h1>
         </div>
 
