@@ -6,7 +6,7 @@ import Table from 'react-bootstrap/Table';
 export default function Restaurant() {
     const { restaurantID } = useParams();
     const [violations, setViolations] = useState([]);
-    const [searchParams] = useSearchParams();
+    // const [searchParams] = useSearchParams();
 
     // const navigate = useNavigate();
 
