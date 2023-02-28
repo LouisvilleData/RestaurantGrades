@@ -39,6 +39,9 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: install # will run `yarn install` command
+          
+      - name: Create ENV file
+        run: echo 'REACT_APP_GCP_API="${{secrets.GCP_API_KEY}}"' > .env
 
       - name: Build production bundle
         uses: borales/actions-yarn@v4
