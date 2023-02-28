@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import Table from 'react-bootstrap/Table';
-import Button from "react-bootstrap/Button";
+// import Button from "react-bootstrap/Button";
 
 export default function Restaurant() {
     const { restaurantID } = useParams();
     const [violations, setViolations] = useState([]);
     const [searchParams] = useSearchParams();
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Inspection_Violations_of_Failed_Restaurants/FeatureServer/0/query?outFields=*&where=(EstablishmentID = ${restaurantID})&f=json`)
