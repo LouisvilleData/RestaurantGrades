@@ -38,7 +38,7 @@ export default function Home() {
 
         if (query !== "" && query.length > 2) {
             setLoading(true);
-            fetch(`https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Restaurant_Inspection_Scores/FeatureServer/0/query?f=json&where=(EstablishmentName LIKE '%25${encodeURI(query)}%25' OR Address LIKE '%25${encodeURI(query)}%25')&outFields=*`)
+            fetch(`https://services1.arcgis.com/79kfd2K6fskCAkyg/arcgis/rest/services/Louisville_Metro_KY_Restaurant_Inspection_Scores/FeatureServer/0/query?f=json&where=(EstablishmentName LIKE '%25${encodeURI(query)}%25' OR (EstablishmentName IN ('${encodeURI(query.replace("'","''"))}')) OR Address LIKE '%25${encodeURI(query)}%25')&outFields=*`)
                 .then(data => (data.json()))
                 .then(json => {
                     setLoading(false);
